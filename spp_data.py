@@ -16,7 +16,7 @@ SHEET_CSV_URL = f"https://docs.google.com/spreadsheets/d/1YkSvU2hHeji5BgjLTf6qTR
 # ========== BACA DATA ==========
 @st.cache_data(ttl=600)
 def load_data():
-    df = pd.read_csv(https://docs.google.com/spreadsheets/d/1YkSvU2hHeji5BgjLTf6qTRLSRT-hreC2l7GFnp9aSXs/export?format=csv)
+    df = pd.read_csv("https://docs.google.com/spreadsheets/d/1YkSvU2hHeji5BgjLTf6qTRLSRT-hreC2l7GFnp9aSXs/export?format=csv")
     df.columns = ["Nama Siswa", "Kelas", "Tanggal Bayar", "Jumlah Bayar"]  # Sesuaikan dengan urutan kolom form
     df["Tanggal Bayar"] = pd.to_datetime(df["Tanggal Bayar"], errors="coerce")
     df["Jumlah Bayar"] = pd.to_numeric(df["Jumlah Bayar"], errors="coerce").fillna(0)
