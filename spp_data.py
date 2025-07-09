@@ -9,8 +9,8 @@ st.markdown("Menampilkan status pembayaran siswa berdasarkan bulan dan kelas. Da
 
 # ====== KONFIGURASI ======
 JUMLAH_SPP = 1000000  # Nominal SPP per bulan
-SHEET_ID = "1YkSvU2hHeji5BgjLTf6qTRLSRT-hreC2l7GFnp9aSXs"  # Ganti dengan ID Google Sheets kamu
-SHEET_CSV_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
+SHEET_ID = "1w_W1PATu-6_g4hXCK_2QzT6h7pl-ECAdpkxmdrVdoF8"  # Ganti dengan ID Google Sheets kamu
+SHEET_CSV_URL = f"https://docs.google.com/spreadsheets/d/1w_W1PATu-6_g4hXCK_2QzT6h7pl-ECAdpkxmdrVdoF8/export?format=csv"
 
 # ====== LOAD DATA GOOGLE SHEETS ======
 @st.cache_data(ttl=600)
