@@ -11,7 +11,7 @@ st.markdown("Menampilkan status pembayaran SPP siswa berdasarkan bulan dan kelas
 # ========== KONFIGURASI ==========
 JUMLAH_SPP = 1000000  # Jumlah SPP per bulan
 SHEET_ID = "1YkSvU2hHeji5BgjLTf6qTRLSRT-hreC2l7GFnp9aSXs"  # Ganti dengan ID Google Sheet kamu
-SHEET_CSV_URL = f"https://docs.google.com/spreadsheets/d/1YkSvU2hHeji5BgjLTf6qTRLSRT-hreC2l7GFnp9aSXs/export?format=csv"
+SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1YkSvU2hHeji5BgjLTf6qTRLSRT-hreC2l7GFnp9aSXs/export?format=csv"
 
 # ========== BACA DATA ==========
 @st.cache_data(ttl=600)
