@@ -5,24 +5,36 @@ from datetime import datetime
 # ====== PENGATURAN DASHBOARD ======
 st.set_page_config(page_title="Dashboard SPP", layout="wide")
 st.title("📊 Dashboard Rekap Pembayaran SPP")
-st.markdown("Dashboard ini mengambil data dari **Google Form** via **Google Sheets**, dan menampilkan status pembayaran per bulan dan per kelas.")
+st.markdown("Dashboard ini terhubung ke **Google Form + Sheets**, dan menampilkan status pembayaran siswa berdasarkan bulan dan kelas.")
 
 # ====== KONFIGURASI ======
 JUMLAH_SPP = 1000000  # Nominal SPP per bulan (Rp)
-SHEET_ID = "1w_W1PATu-6_g4hXCK_2QzT6h7pl-ECAdpkxmdrVdoF8"  # GANTI dengan ID Google Sheets kamu
-SHEET_CSV_URL = f"https://docs.google.com/spreadsheets/d/1w_W1PATu-6_g4hXCK_2QzT6h7pl-ECAdpkxmdrVdoF8/export?format=csv"
+SHEET_ID = "1YkSvU2hHeji5BgjLTf6qTRLSRT-hreC2l7GFnp9aSXs"  # GANTI DENGAN ID KAMU
+SHEET_CSV_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
 
-# ====== LOAD DATA DARI GOOGLE SHEETS ======
+# ====== LOAD DATA GOOGLE SHEETS ======
 @st.cache_data(ttl=600)
 def load_data():
     df = pd.read_csv(SHEET_CSV_URL)
+
+    # Tampilkan kolom asli untuk debug (opsional)
+    # st.write("Kolom asli:", df.columns)
+
+    # Jika ada kolom 'Timestamp', hapus
     if "Timestamp" in df.columns:
-        df = df.drop(column=['Timestamp'])
-        df.columns = ["Nama Siswa", "Kelas", "Tanggal Bayar", "Jumlah Bayar"]
-        df["Tanggal Bayar"] = pd.to_datetime(df["Tanggal Bayar"], errors="coerce")
-        df["Jumlah Bayar"] = pd.to_numeric(df["Jumlah Bayar"], errors="coerce").fillna(0)
-        df["Bulan"] = df["Tanggal Bayar"].dt.month
-        df["Tahun"] = df["Tanggal Bayar"].dt.year
+        df = df.drop(columns=["Timestamp"])
+
+    # Pastikan kolom sesuai
+    df.columns = ["Nama Siswa", "Kelas", "Tanggal Bayar", "Jumlah Bayar"]
+
+    # Konversi tipe data
+    df["Tanggal Bayar"] = pd.to_datetime(df["Tanggal Bayar"], errors="coerce")
+    df["Jumlah Bayar"] = pd.to_numeric(df["Jumlah Bayar"], errors="coerce").fillna(0)
+
+    # Tambahkan kolom bulan & tahun
+    df["Bulan"] = df["Tanggal Bayar"].dt.month
+    df["Tahun"] = df["Tanggal Bayar"].dt.year
+
     return df
 
 try:
@@ -45,12 +57,14 @@ col1, col2 = st.columns(2)
 bulan_pilih = col1.selectbox("📅 Pilih Bulan", available_bulan, format_func=lambda x: bulan_dict[int(x)])
 tahun_pilih = col2.selectbox("📆 Pilih Tahun", available_tahun)
 
-# ====== FILTER DATA SESUAI BULAN & TAHUN ======
+# ====== FILTER DATA SESUAI PILIHAN ======
 data_filter = data[(data["Bulan"] == bulan_pilih) & (data["Tahun"] == tahun_pilih)]
+
+# Hanya ambil pembayaran sampai tanggal 10
 sudah_bayar = data_filter[data_filter["Tanggal Bayar"].dt.day <= 10].copy()
 semua_siswa = data[["Nama Siswa", "Kelas"]].drop_duplicates().copy()
 
-# ====== PROSES REKAP ======
+# ====== REKAP STATUS PEMBAYARAN ======
 semua_siswa["Status"] = semua_siswa["Nama Siswa"].isin(sudah_bayar["Nama Siswa"])
 semua_siswa["Status"] = semua_siswa["Status"].map({True: "Lunas", False: "Belum Lunas"})
 
@@ -63,7 +77,7 @@ rekap["Kekurangan"] = JUMLAH_SPP - rekap["Total Bayar Bulan Ini"]
 rekap["Kekurangan"] = rekap["Kekurangan"].clip(lower=0)
 rekap = rekap.sort_values(by=["Kelas", "Nama Siswa"])
 
-# ====== FILTER TAMBAHAN: KELAS ======
+# ====== FILTER KELAS ======
 kelas_pilih = st.selectbox("🏫 Filter Kelas", options=["Semua"] + sorted(rekap["Kelas"].dropna().unique()))
 
 if kelas_pilih != "Semua":
@@ -73,6 +87,6 @@ if kelas_pilih != "Semua":
 st.subheader(f"📋 Rekap Bulan {bulan_dict[bulan_pilih]} {tahun_pilih}")
 st.dataframe(rekap, use_container_width=True)
 
-# ====== TOMBOL DOWNLOAD ======
+# ====== DOWNLOAD CSV ======
 csv = rekap.to_csv(index=False).encode("utf-8")
-st.download_button("⬇️ Download CSV", data=csv, file_name="rekap_spp.csv", mime="text/csv")
+st.download_button("⬇️ Download Rekap CSV", data=csv, file_name="rekap_spp.csv", mime="text/csv")
