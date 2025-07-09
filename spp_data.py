@@ -9,8 +9,8 @@ st.markdown("Dashboard ini mengambil data dari **Google Form** via **Google Shee
 
 # ====== KONFIGURASI ======
 JUMLAH_SPP = 1000000  # Nominal SPP per bulan (Rp)
-SHEET_ID = "1YkSvU2hHeji5BgjLTf6qTRLSRT-hreC2l7GFnp9aSXs"  # GANTI dengan ID Google Sheets kamu
-SHEET_CSV_URL = f"https://docs.google.com/spreadsheets/d/1YkSvU2hHeji5BgjLTf6qTRLSRT-hreC2l7GFnp9aSXs/export?format=csv"
+SHEET_ID = "1w_W1PATu-6_g4hXCK_2QzT6h7pl-ECAdpkxmdrVdoF8"  # GANTI dengan ID Google Sheets kamu
+SHEET_CSV_URL = f"https://docs.google.com/spreadsheets/d/1w_W1PATu-6_g4hXCK_2QzT6h7pl-ECAdpkxmdrVdoF8/export?format=csv"
 
 # ====== LOAD DATA DARI GOOGLE SHEETS ======
 @st.cache_data(ttl=600)
