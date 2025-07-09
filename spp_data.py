@@ -16,11 +16,13 @@ SHEET_CSV_URL = f"https://docs.google.com/spreadsheets/d/1w_W1PATu-6_g4hXCK_2QzT
 @st.cache_data(ttl=600)
 def load_data():
     df = pd.read_csv(SHEET_CSV_URL)
-    df.columns = ["Nama Siswa", "Kelas", "Tanggal Bayar", "Jumlah Bayar"]
-    df["Tanggal Bayar"] = pd.to_datetime(df["Tanggal Bayar"], errors="coerce")
-    df["Jumlah Bayar"] = pd.to_numeric(df["Jumlah Bayar"], errors="coerce").fillna(0)
-    df["Bulan"] = df["Tanggal Bayar"].dt.month
-    df["Tahun"] = df["Tanggal Bayar"].dt.year
+    if "Timestamp" in df.columns:
+        df = df.drop(column=['Timestamp'])
+        df.columns = ["Nama Siswa", "Kelas", "Tanggal Bayar", "Jumlah Bayar"]
+        df["Tanggal Bayar"] = pd.to_datetime(df["Tanggal Bayar"], errors="coerce")
+        df["Jumlah Bayar"] = pd.to_numeric(df["Jumlah Bayar"], errors="coerce").fillna(0)
+        df["Bulan"] = df["Tanggal Bayar"].dt.month
+        df["Tahun"] = df["Tanggal Bayar"].dt.year
     return df
 
 try:
